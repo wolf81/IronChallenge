@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using IronChallenge;
+
+var output = Phone.OldPhonePad("4433555 555666##");
+Console.WriteLine(output);

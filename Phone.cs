@@ -10,7 +10,7 @@ namespace IronChallenge
 		/// dimension represents the index of the key. For each dimension we add
 		/// a list of associated characters.
 		/// </summary>
-        readonly char[][] keypad = {
+        static readonly char[][] keypad = {
 			new char[] { '_' },					// 0
 			new char[] { '&', '\'', '(' },		// 1
 			new char[] { 'A', 'B', 'C' },		// 2
@@ -24,9 +24,6 @@ namespace IronChallenge
 			new char[] { '*', '\b' },			// 10 - on keypad left-hand of 9
 			new char[] { '►', '#' },			// 11 - on keypad right-hand of 9
         };
-
-		private int _keyIndex;
-		private int _charIndex;
 		
 		public static string OldPhonePad(string input)
 		{
@@ -40,12 +37,52 @@ namespace IronChallenge
 				throw new FormatException("Input string should be terminated by a hash (#)");
 			}
 
+			var keyIndex = -1;
+			var lastCharIndex = -1;
+			var output = "";
+			
 			foreach (var c in input)
 			{
-				Console.WriteLine('c');
-			}
+				// try to convert to an integer, if integer is found, we can
+				// extract the appropriate letter from the keypad array
+				if (int.TryParse(c.ToString(), out int charIndex))
+				{
+					Console.WriteLine($"charIndex: {charIndex}");
 
-			return string.Empty;
+					if (lastCharIndex == -1)
+					{
+						lastCharIndex = charIndex;
+						keyIndex = -1;
+					}
+
+					if (charIndex == lastCharIndex)
+					{
+						Console.WriteLine("increment char");
+						keyIndex = keyIndex + 1;
+					}
+					else
+					{
+						Console.WriteLine("increment key");
+                        output = output + keypad[lastCharIndex][keyIndex];
+                        lastCharIndex = charIndex;
+                        keyIndex = 0;
+                    }
+                }
+				else if (c.Equals(' '))
+				{
+                    output = output + keypad[lastCharIndex][keyIndex];
+                    lastCharIndex = -1;
+					keyIndex = -1;
+				}
+                else if (c.Equals('#'))
+				{
+                    output = output + keypad[lastCharIndex][keyIndex];
+                    // just terminate immediately when we encounter a hash, even in the mid of a string
+                    break;
+				}
+            }
+
+			return output;
 		}
 	}
 }

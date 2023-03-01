@@ -27,15 +27,21 @@ public class PhoneTests
     }
 
     [TestMethod]
-    public void TestLetterScroll()
+    public void TestKeyNextLetter()
     {
         Assert.IsTrue(Phone.OldPhonePad("33#").Equals("E"));
     }
 
     [TestMethod]
-    public void TestLetterScrollBackspace()
+    public void TestBackspace()
     {
         Assert.IsTrue(Phone.OldPhonePad("227*#").Equals("B"));
+    }
+
+    [TestMethod]
+    public void TestBackspaceMulti()
+    {
+        Assert.IsTrue(Phone.OldPhonePad("227*227**11#").Equals("B'"));
     }
 
     [TestMethod]

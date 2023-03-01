@@ -115,7 +115,9 @@ namespace IronChallenge
 					{
 						// remove last character & reset key index for next
 						// iteration
+						var output1 = output;
 						output = output.Substring(0, output.Length - 1);
+						Console.WriteLine($"{output1} -> {output}");
                         lastKeyIndex = -1;
                     }
                 }

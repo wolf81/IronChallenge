@@ -11,7 +11,7 @@ namespace IronChallenge
 		/// a list of associated characters.
 		/// </summary>
         static readonly char[][] keypad = {
-			new char[] { '_' },					// 0
+			new char[] { ' ' },					// 0
 			new char[] { '&', '\'', '(' },		// 1
 			new char[] { 'A', 'B', 'C' },		// 2
 			new char[] { 'D', 'E', 'F' },		// 3
@@ -37,47 +37,48 @@ namespace IronChallenge
 				throw new FormatException("Input string should be terminated by a hash (#)");
 			}
 
-			var keyIndex = -1;
-			var lastCharIndex = -1;
+			var charIndex = -1;
+			var lastKeyIndex = -1;
 			var output = "";
 			
 			foreach (var c in input)
 			{
-				// try to convert to an integer, if integer is found, we can
-				// extract the appropriate letter from the keypad array
-				if (int.TryParse(c.ToString(), out int charIndex))
+				// number: add letter from keypad array to output string
+				if (int.TryParse(c.ToString(), out int keyIndex))
 				{
-					Console.WriteLine($"charIndex: {charIndex}");
-
-					if (lastCharIndex == -1)
+					// if last key was not set, set to current key and
+					// reset character index
+					if (lastKeyIndex == -1)
 					{
-						lastCharIndex = charIndex;
-						keyIndex = -1;
+						lastKeyIndex = keyIndex;
+						charIndex = -1;
 					}
 
-					if (charIndex == lastCharIndex)
+					if (keyIndex == lastKeyIndex)
 					{
-						Console.WriteLine("increment char");
-						keyIndex = keyIndex + 1;
+						// loop through the characters for current key, when at
+						// last character, return to first in array
+						charIndex = (charIndex + 1) % keypad[lastKeyIndex].Count();
 					}
 					else
 					{
-						Console.WriteLine("increment key");
-                        output = output + keypad[lastCharIndex][keyIndex];
-                        lastCharIndex = charIndex;
-                        keyIndex = 0;
+						// the key has changed, so update output string, key
+						// index & char index
+                        output = output + keypad[lastKeyIndex][charIndex];
+                        lastKeyIndex = keyIndex;
+                        charIndex = 0;
                     }
                 }
+				// space: reset key index, e.g. '4 44' => 'GH'
 				else if (c.Equals(' '))
 				{
-                    output = output + keypad[lastCharIndex][keyIndex];
-                    lastCharIndex = -1;
-					keyIndex = -1;
+                    output = output + keypad[lastKeyIndex][charIndex];
+                    lastKeyIndex = -1;
 				}
+				// hash: append current char to result & terminate
                 else if (c.Equals('#'))
 				{
-                    output = output + keypad[lastCharIndex][keyIndex];
-                    // just terminate immediately when we encounter a hash, even in the mid of a string
+                    output = output + keypad[lastKeyIndex][charIndex];
                     break;
 				}
             }

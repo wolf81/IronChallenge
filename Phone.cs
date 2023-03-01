@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace IronChallenge
 {
 	public class Phone
 	{
+        /// <summary>
+        /// Only allow numbers 0 to 9, hash '#', asterisk '*' and space ' '. 
+        /// </summary>
+        private static readonly Regex ValidChars = new Regex("^[0-9#\\* ]*$"); 
+
         /// <summary>
 		/// This multi-dimensional array represents the keypad. The first
 		/// dimension represents the index of the key. For each dimension we add
@@ -24,7 +30,13 @@ namespace IronChallenge
 			//new char[] { '*', '\b' },			// 0xA - on keypad left-hand of 9
 			//new char[] { '►', '#' },			// 0xB - on keypad right-hand of 9
         };
-		
+
+		/// <summary>
+		/// Convert keypad input to a string.
+		/// </summary>
+		/// <param name="input">An input string containing numbers, asterisk, hash and/or space.</param>
+		/// <returns>An output string based on the numbers pressed on keypad.</returns>
+		/// <exception cref="FormatException">A format exception is thrown if input string is not in expected format.</exception>
 		public static string OldPhonePad(string input)
 		{
 			if (input.Equals(string.Empty))
@@ -32,7 +44,12 @@ namespace IronChallenge
 				throw new FormatException("Input string required");
 			}
 
-			if (input.Last().Equals('#') == false)
+            if (!ValidChars.IsMatch(input))
+            {
+                throw new FormatException("Input string contains invalid characters");
+            }
+
+            if (input.Last().Equals('#') == false)
 			{
 				throw new FormatException("Input string should be terminated by a hash (#)");
 			}
@@ -84,16 +101,20 @@ namespace IronChallenge
                     }
                     break;
 				}
-				// backspace
+				// backspace: remove last character
 				else if (c.Equals('*'))
 				{
 					if (lastKeyIndex != -1)
 					{
+						// first append newest character if we didn't press
+						// backspace previously
                         output = output + Keys[lastKeyIndex][charIndex];
                     }
 
                     if (output.Length > 1)
 					{
+						// remove last character & reset key index for next
+						// iteration
 						output = output.Substring(0, output.Length - 1);
                         lastKeyIndex = -1;
                     }

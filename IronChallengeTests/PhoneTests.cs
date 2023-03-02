@@ -33,9 +33,21 @@ public class PhoneTests
     }
 
     [TestMethod]
-    public void TestBackspace()
+    public void TestBackspace1()
     {
         Assert.IsTrue(Phone.OldPhonePad("227*#").Equals("B"));
+    }
+
+    [TestMethod]
+    public void TestBackspace2()
+    {
+        Assert.IsTrue(Phone.OldPhonePad("2*#").Equals(""));
+    }
+
+    [TestMethod]
+    public void TestBackspaceStart()
+    {
+        Assert.IsTrue(Phone.OldPhonePad("*#").Equals(""));
     }
 
     [TestMethod]

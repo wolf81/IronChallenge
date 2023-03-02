@@ -110,7 +110,7 @@ namespace IronChallenge
                         output = output + Keys[lastKeyIndex][charIndex];
                     }
 
-                    if (output.Length > 1)
+                    if (output.Length > 0)
                     {
                         // remove last character & reset key index for next
                         // iteration

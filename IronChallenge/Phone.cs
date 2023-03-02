@@ -51,8 +51,12 @@ namespace IronChallenge
                 throw new FormatException("Input string should be terminated by a hash (#)");
             }
 
+            // the index of the character for the current active key
             var charIndex = -1;
+            // the index of the key that was pressed last time, so we can
+            // check repeat presses
             var lastKeyIndex = -1;
+            // the output string
             var output = "";
 
             foreach (var c in input)
@@ -60,8 +64,8 @@ namespace IronChallenge
                 // number: add letter from keypad array to output string
                 if (int.TryParse(c.ToString(), out int keyIndex))
                 {
-                    // if last key was not set, set to current key and
-                    // reset character index
+                    // initialize last key index with current key index if
+                    // not set
                     if (lastKeyIndex == -1)
                     {
                         lastKeyIndex = keyIndex;
@@ -70,26 +74,25 @@ namespace IronChallenge
 
                     if (keyIndex == lastKeyIndex)
                     {
-                        // loop through the characters for current key, when at
-                        // last character, return to first in array
+                        // loop to next character for current active key
                         charIndex = (charIndex + 1) % Keys[lastKeyIndex].Length;
                     }
                     else
                     {
-                        // the key has changed, so update output string, key
-                        // index & char index
+                        // if different key is pressed, update key index and
+                        // reset character index
                         output = output + Keys[lastKeyIndex][charIndex];
                         lastKeyIndex = keyIndex;
                         charIndex = 0;
                     }
                 }
-                // space: reset key index, e.g. '4 44' => 'GH'
+                // space: update result & reset key index, e.g. '4 44' => 'GH'
                 else if (c.Equals(' '))
                 {
                     output = output + Keys[lastKeyIndex][charIndex];
                     lastKeyIndex = -1;
                 }
-                // hash: append current char to result & terminate
+                // hash: update result & terminate
                 else if (c.Equals('#'))
                 {
                     if (lastKeyIndex != -1)
@@ -103,8 +106,7 @@ namespace IronChallenge
                 {
                     if (lastKeyIndex != -1)
                     {
-                        // first append newest character if we didn't press
-                        // backspace previously
+                        // previous input not backspace: update result
                         output = output + Keys[lastKeyIndex][charIndex];
                     }
 

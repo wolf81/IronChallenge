@@ -16,20 +16,20 @@ namespace IronChallenge
         /// a list of associated characters.
         /// </summary>
         static readonly char[][] Keys = {
-            new char[] { ' ' },					// 0
-		    new char[] { '&', '\'', '(' },		// 1
-		    new char[] { 'A', 'B', 'C' },		// 2
-		    new char[] { 'D', 'E', 'F' },		// 3
-            new char[] { 'G', 'H', 'I' },		// 4
-            new char[] { 'J', 'K', 'L' },		// 5
-            new char[] { 'M', 'N', 'O' },		// 6
-            new char[] { 'P', 'Q', 'R', 'S' },	// 7
-            new char[] { 'T', 'U', 'V' },		// 8
-            new char[] { 'W', 'X', 'Y', 'Z' },	// 9
-    };
+            new char[] { ' ' },                 // keypad 0
+            new char[] { '&', '\'', '(' },      // keypad 1
+            new char[] { 'A', 'B', 'C' },       // keypad 2
+            new char[] { 'D', 'E', 'F' },       // keypad 3
+            new char[] { 'G', 'H', 'I' },       // keypad 4
+            new char[] { 'J', 'K', 'L' },       // keypad 5
+            new char[] { 'M', 'N', 'O' },       // keypad 6
+            new char[] { 'P', 'Q', 'R', 'S' },  // keypad 7
+            new char[] { 'T', 'U', 'V' },       // keypad 8
+            new char[] { 'W', 'X', 'Y', 'Z' },  // keypad 9
+        };
 
         /// <summary>
-        /// Convert keypad input to a string.
+        /// Convert keypad input to an output string.
         /// </summary>
         /// <param name="input">An input string containing numbers, asterisk, hash and/or space.</param>
         /// <returns>An output string based on the numbers pressed on keypad.</returns>
@@ -53,8 +53,8 @@ namespace IronChallenge
 
             // the index of the character for the current active key
             var charIndex = -1;
-            // the index of the key that was pressed last time, so we can
-            // check repeat presses
+            // the index of the key that was pressed last time, so we can check
+            // repeat presses
             var lastKeyIndex = -1;
             // the output string
             var output = "";
@@ -64,23 +64,23 @@ namespace IronChallenge
                 // number: add letter from keypad array to output string
                 if (int.TryParse(c.ToString(), out int keyIndex))
                 {
-                    // initialize last key index with current key index if
-                    // not set
+                    // initialize last key index with current key index if not
+                    // set
                     if (lastKeyIndex == -1)
                     {
                         lastKeyIndex = keyIndex;
                         charIndex = -1;
                     }
 
+                    // loop to next character for current active key
                     if (keyIndex == lastKeyIndex)
                     {
-                        // loop to next character for current active key
                         charIndex = (charIndex + 1) % Keys[lastKeyIndex].Length;
                     }
+                    // if different key is pressed, update key index and reset
+                    // character index
                     else
                     {
-                        // if different key is pressed, update key index and
-                        // reset character index
                         output = output + Keys[lastKeyIndex][charIndex];
                         lastKeyIndex = keyIndex;
                         charIndex = 0;
@@ -104,16 +104,16 @@ namespace IronChallenge
                 // backspace: remove last character
                 else if (c.Equals('*'))
                 {
+                    // previous input not backspace: update result
                     if (lastKeyIndex != -1)
                     {
-                        // previous input not backspace: update result
                         output = output + Keys[lastKeyIndex][charIndex];
                     }
 
+                    // remove last character & reset key index for next
+                    // iteration
                     if (output.Length > 0)
                     {
-                        // remove last character & reset key index for next
-                        // iteration
                         output = output.Substring(0, output.Length - 1);
                         lastKeyIndex = -1;
                     }
